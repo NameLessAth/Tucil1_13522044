@@ -1,27 +1,40 @@
 import time
 
+sizebuffer = 0
+colrow = []
+matrixnya = []
+size = 0
+sequences = []
 
 def txtParse(txtString):
-    line = 1
+    arrRes = []
+    strtemp = ""
+    for i in txtString:
+        if i == "\n":
+            arrRes.append(strtemp)
+            strtemp = ""
+        else:
+            strtemp += i
+    if strtemp != "":
+        arrRes.append(strtemp)
+    return arrRes
 
+def proses(arrRes):
+    global size; global sizebuffer; global colrow; global matrixnya; global sequences
+    sizebuffer = int(arrRes[0])
+    colrow = [int(i) for i in arrRes[1].split()]
+    matrixnya = [[0 for i in range(colrow[0])] for j in range(colrow[1])]
+    for i in range(colrow[1]):
+        matrixnya[i] = [str(a) for a in arrRes[2+i].split()]
+    size = int(arrRes[2+colrow[1]])
+    sequences = [["a", "b"] for j in range(size)]
+    for i in range(size):
+        sequences[i][0] = arrRes[3+colrow[1]+(2*i)]
+        sequences[i][1] = int(arrRes[4+colrow[1]+(2*i)])
 
-
-size = int(input())
-sizebuffer = size
-
-colrow = [int(i) for i in input().split()]
-matrixnya = [[0 for i in range(colrow[0])] for j in range(colrow[1])]
-for i in range(colrow[1]):
-    matrixnya[i] = [str(i) for i in input().split()]
-
-size = int(input())
-sequences = [["a", "b"] for j in range(size)]
-for i in range(size):
-    sequences[i][0] = input(); sequences[i][1] = int(input())
-
-maxval = 20
-maxarr = "BD BD BD"
-maxcoor = [(1,1), (1,3), (2,3)]
+maxval = -1
+maxarr = ""
+maxcoor = []
 
 def evaluate(arr, coor):
     global maxval; global maxarr; global maxcoor
@@ -73,14 +86,27 @@ def iterate(arrtemp, coortemp, rowbool):
                     arrtemp2 = arrtemp.copy()
                     coortemp2 = coortemp.copy()
                     arrtemp2.append(matrixnya[coorrecent[0]][i])
-                    coortemp2.append((coorrecent[1], i))
+                    coortemp2.append((coorrecent[0], i))
                     iterate(arrtemp2, coortemp2, True)
 
-start_time = time.perf_counter()
-iterate([], [], True)
-print("end")
-print(maxval)
-print(maxarr)
-print(maxcoor)
-end_time = time.perf_counter()
-print("\nElapsed time : ", (end_time-start_time))
+def executeSol(txtString):
+    arg = txtParse(txtString)
+    proses(arg)
+    start_time = time.perf_counter()
+    iterate([], [], True)
+    print()
+    print(maxval)
+    print(maxarr)
+    for i in maxcoor:
+        print(f"{i[1]+1}, {i[0]+1}")
+    end_time = time.perf_counter()
+    print(f"\nElapsed time : {round((end_time-start_time)*1000, 2)}ms")
+    verif = input("Apakah ingin menyimpan solusi? (y/n): ")
+    if verif == "y":
+        patharg = input("Masukkan nama file untuk disimpan: ")
+        f = open("test/"+patharg, "w")
+        f.write(f"{maxval}\n{maxarr}")
+        for i in maxcoor:
+            f.write(f"\n{i[1]+1}, {i[0]+1}")
+        f.close()
+        print("Solusi berhasil disimpan!")

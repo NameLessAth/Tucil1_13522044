@@ -1,4 +1,5 @@
 from solver import *
+from generator import *
 import os
 
 
@@ -12,7 +13,11 @@ val = int(val)
 
 if val == 1:
     txtarg = input("Masukkan file txt yang hendak dimasukkan (gunakan .txt): ")
-    if not os.path.isfile(txtarg):
+    if not os.path.isfile("test/"+txtarg):
         print("Tidak ditemukan file yang dimaksud!")
         exit()
+    else:
+        executeSol(open("test/"+txtarg, "r").read())
+else:
+    executeGen()
     
