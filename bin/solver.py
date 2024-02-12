@@ -39,13 +39,15 @@ maxcoor = []
 def evaluate(arr, coor):
     global maxval; global maxarr; global maxcoor
     strtemp = ""
-    for i in arr:
-        strtemp = strtemp + i + " "
+    for i in range(len(arr)):
+        strtemp += arr[i]
+        if i != len(arr)-1:
+            strtemp += " "
     valtemp = 0
     for i in range(len(sequences)):
         if sequences[i][0] in strtemp:
             valtemp += sequences[i][1]
-    if valtemp > maxval:
+    if valtemp > maxval or (valtemp == maxval and len(strtemp) < len(maxarr)):
         maxarr = strtemp
         maxval = valtemp
         maxcoor = coor  
@@ -58,11 +60,8 @@ def uniquecoor(coor):
     return True
 
 def iterate(arrtemp, coortemp, rowbool):
-    # jika buffer penuh
-    if len(arrtemp) == sizebuffer and uniquecoor(coortemp):
-        evaluate(arrtemp, coortemp)
     # jika buffer kosong
-    elif len(arrtemp) == 0:
+    if len(arrtemp) == 0:
         for i in range(colrow[0]):
             arrtemp2 = arrtemp.copy()
             coortemp2 = coortemp.copy()
@@ -79,6 +78,8 @@ def iterate(arrtemp, coortemp, rowbool):
                     coortemp2 = coortemp.copy()
                     arrtemp2.append(matrixnya[i][coorrecent[1]])
                     coortemp2.append((i, coorrecent[1]))
+                    if uniquecoor(coortemp2):
+                        evaluate(arrtemp2, coortemp2)
                     iterate(arrtemp2, coortemp2, False)
         else:
             for i in range(colrow[0]):
@@ -87,6 +88,8 @@ def iterate(arrtemp, coortemp, rowbool):
                     coortemp2 = coortemp.copy()
                     arrtemp2.append(matrixnya[coorrecent[0]][i])
                     coortemp2.append((coorrecent[0], i))
+                    if uniquecoor(coortemp2):
+                        evaluate(arrtemp2, coortemp2)
                     iterate(arrtemp2, coortemp2, True)
 
 def executeSol(txtString):

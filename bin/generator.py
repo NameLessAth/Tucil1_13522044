@@ -2,7 +2,7 @@ import random as rd
 
 
 def executeGen():
-    print()
+    print("masukkan input di bawah ini sesuai dengan format yang ditentukan\n")
     jmltokenunik = int(input())
     token = [str(a) for a in input().split()]
     ukuranbuffer = int(input())
@@ -10,13 +10,13 @@ def executeGen():
     jmlseq = int(input())
     maxseq = int(input())
 
-    thematrix = [["" for i in range(colrow[1])] for j in range(colrow[0])]
+    thematrix = [["" for i in range(colrow[0])] for j in range(colrow[1])]
     for i in range(colrow[1]):
         for j in range(colrow[0]):
             thematrix[i][j] = rd.choice(token)
     theseq = [["a", "b"] for i in range(jmlseq)]
     for i in range(jmlseq):
-        panjangseq = rd.randint(1, maxseq)
+        panjangseq = rd.randint(2, maxseq)
         seqtemp = ""
         for j in range(panjangseq):
             seqtemp += rd.choice(token)
